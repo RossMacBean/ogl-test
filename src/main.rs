@@ -12,14 +12,16 @@ fn main() {
     gl_attr.set_context_version(4, 5);
      
     let window = video_subsystem
-        .window("Game", 900, 700)
+        .window("OGL Test", 900, 700)
         .opengl()
         .resizable()
         .build()
         .unwrap();
 
     let _gl_context = window.gl_create_context().unwrap();
-    let _gl = gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const std::os::raw::c_void);
+    let _gl = gl::load_with(
+        |s| video_subsystem.gl_get_proc_address(s) as *const std::os::raw::c_void
+    );
 
     use std::ffi::CString;
     let vert_shader = render_gl::Shader::from_vert_source(
@@ -35,9 +37,9 @@ fn main() {
     ).unwrap();
 
     let vertices: Vec<f32> = vec![
-        -0.5, -0.5, 0.0,
-        0.5, -0.5, 0.0,
-        0.0, 0.5, 0.0
+        0.5, -0.5, 0.0,    1.0, 0.0, 0.0,
+        -0.5, -0.5, 0.0,     0.0, 1.0, 0.0,
+        0.0, 0.5, 0.0,      0.0, 0.0, 1.0
     ];
 
     let mut vbo: gl::types::GLuint = 0;
@@ -70,8 +72,18 @@ fn main() {
             3,
             gl::FLOAT,
             gl::FALSE,
-            (3 * std::mem::size_of::<f32>()) as gl::types::GLint,
+            (6 * std::mem::size_of::<f32>()) as gl::types::GLint,
             std::ptr::null()
+        );
+
+        gl::EnableVertexAttribArray(1);
+        gl::VertexAttribPointer(
+            1,
+            3,
+            gl::FLOAT,
+            gl::FALSE,
+            (6 * std::mem::size_of::<f32>()) as gl::types::GLint,
+            (3 * std::mem::size_of::<f32>()) as *const gl::types::GLvoid
         );
 
         gl::BindBuffer(gl::ARRAY_BUFFER, 0);
